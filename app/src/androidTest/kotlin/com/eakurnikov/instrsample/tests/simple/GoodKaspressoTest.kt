@@ -3,6 +3,8 @@ package com.eakurnikov.instrsample.tests.simple
 import android.Manifest
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.eakurnikov.instrsample.view.MainActivity
 import com.eakurnikov.instrsample.R
@@ -11,6 +13,10 @@ import com.eakurnikov.instrsample.matchers.ViewSizeMatcher.Companion.withWidthAn
 import com.eakurnikov.instrsample.screens.MainScreen
 import com.eakurnikov.instrsample.screens.SimpleScreen
 import com.eakurnikov.instrsample.screens.VerySimpleScreen
+import com.kaspersky.components.alluresupport.withAllureSupport
+import com.kaspersky.kaspresso.annotations.E2e
+import com.kaspersky.kaspresso.annotations.Functional
+import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import org.hamcrest.Matchers
 import org.junit.Rule
@@ -18,8 +24,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class GoodKaspressoTest : TestCase() {
-
+class GoodKaspressoTest : TestCase(
+    kaspressoBuilder = Kaspresso.Builder.withAllureSupport()
+) {
     @get:Rule
     val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -28,8 +35,17 @@ class GoodKaspressoTest : TestCase() {
     @get:Rule
     val activityRule = activityScenarioRule<MainActivity>()
 
+    @E2e
+    @SmallTest
     @Test
-    fun goodKaspressoTest() {
+    fun e2eTest() = goodKaspressoTest()
+
+    @Functional
+    @SmallTest
+    @Test
+    fun mockedTest() = goodKaspressoTest()
+
+    private fun goodKaspressoTest() {
         before {
             /**
              * Some action to prepare the state
@@ -40,6 +56,7 @@ class GoodKaspressoTest : TestCase() {
              */
         }.run {
             step("Open Simple screen") {
+                testLogger.i("Instrumentation=${InstrumentationRegistry.getInstrumentation()}")
                 MainScreen {
                     title.hasText(R.string.main_title)
                     title.hasTextColor(R.color.colorPrimary)

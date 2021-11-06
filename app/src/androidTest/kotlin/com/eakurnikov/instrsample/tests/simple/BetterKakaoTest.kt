@@ -4,7 +4,7 @@ import android.Manifest
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
-import com.eakurnikov.instrsample.MainActivity
+import com.eakurnikov.instrsample.view.MainActivity
 import com.eakurnikov.instrsample.R
 import com.eakurnikov.instrsample.matchers.ClassNameMatcher
 import com.eakurnikov.instrsample.matchers.ViewSizeMatcher.Companion.withWidthAndHeight

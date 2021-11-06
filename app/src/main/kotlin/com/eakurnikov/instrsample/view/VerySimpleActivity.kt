@@ -1,10 +1,11 @@
-package com.eakurnikov.instrsample
+package com.eakurnikov.instrsample.view
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.eakurnikov.instrsample.R
 
 class VerySimpleActivity : AppCompatActivity() {
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Instrumental tests sample</string>
+    <string name="app_name">Prod sample</string>
 
     <!-- Main activity -->
     <string name="main_title">Screens to test</string>

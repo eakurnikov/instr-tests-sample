@@ -10,7 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
-import com.eakurnikov.instrsample.MainActivity
+import com.eakurnikov.instrsample.view.MainActivity
 import com.eakurnikov.instrsample.R
 import com.eakurnikov.instrsample.matchers.BackgroundColorMatcher.Companion.withBackgroundColor
 import com.eakurnikov.instrsample.matchers.ClassNameMatcher

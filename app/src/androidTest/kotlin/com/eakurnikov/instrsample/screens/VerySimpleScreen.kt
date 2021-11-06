@@ -1,7 +1,7 @@
 package com.eakurnikov.instrsample.screens
 
 import com.eakurnikov.instrsample.R
-import com.eakurnikov.instrsample.VerySimpleActivity
+import com.eakurnikov.instrsample.view.VerySimpleActivity
 import com.kaspersky.kaspresso.screens.KScreen
 import io.github.kakaocup.kakao.text.KTextView
 

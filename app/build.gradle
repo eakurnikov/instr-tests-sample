@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.eakurnikov.instrsample"
 
-        minSdk 23
+        minSdk 21
         targetSdk 31
 
         versionCode 1
@@ -18,8 +18,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('instr-tests-keystore.jks')
+            keyAlias 'instr-test-keystore'
+            keyPassword 'instrtests1'
+            storePassword 'instrtests1'
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

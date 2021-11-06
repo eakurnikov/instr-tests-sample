@@ -1,8 +1,9 @@
-package com.eakurnikov.instrsample
+package com.eakurnikov.instrsample.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.eakurnikov.instrsample.R
 
 class MainActivity : AppCompatActivity() {
 

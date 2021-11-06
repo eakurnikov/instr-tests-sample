@@ -1,7 +1,7 @@
 package com.eakurnikov.instrsample.screens
 
 import com.eakurnikov.instrsample.R
-import com.eakurnikov.instrsample.SimpleActivity
+import com.eakurnikov.instrsample.view.SimpleActivity
 import com.kaspersky.kaspresso.screens.KScreen
 import io.github.kakaocup.kakao.edit.KEditText
 import io.github.kakaocup.kakao.text.KButton

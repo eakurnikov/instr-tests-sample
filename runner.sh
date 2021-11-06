@@ -4,7 +4,7 @@ set -xe
 
 action=all # all|buildAndTest|test|clear
 buildCommand="assembleDebug assembleDebugAndroidTest"
-flags="-e debug false -e size small -e annotation com.kaspersky.kaspresso.annotations.E2e"
+flags="-e debug false" #-e size small -e annotation com.kaspersky.kaspresso.annotations.E2e
 jUnitRunner=com.eakurnikov.instrsample.debug.test/io.qameta.allure.android.runners.AllureAndroidJUnitRunner #androidx.test.runner.AndroidJUnitRunner #com.eakurnikov.instrsample.runners.CustomAndroidJUnitRunner # com.eakurnikov.instrsample.debug.test|com.eakurnikov.instrsample.test/...
 outputs=app/build/outputs
 results=./allure-results
@@ -38,19 +38,18 @@ installApks() {
 }
 
 test() {
-  for testClass in $(cat ./test-plan.txt)
-  do
+  for testClass in $(cat ./test-plan.txt); do
     adb shell am instrument -w -m -e class $testClass $jUnitRunner #$flags
     adb shell pm clear com.eakurnikov.instrsample.debug
   done
 }
 
 clearDeviceResults() {
-    adb shell rm -rf /sdcard/allure-results
-    adb shell rm -rf /sdcard/logcat
-    adb shell rm -rf /sdcard/report
-    adb shell rm -rf /sdcard/screenshots
-    adb shell rm -rf /sdcard/view_hierarchy
+  adb shell rm -rf /sdcard/allure-results
+  adb shell rm -rf /sdcard/logcat
+  adb shell rm -rf /sdcard/report
+  adb shell rm -rf /sdcard/screenshots
+  adb shell rm -rf /sdcard/view_hierarchy
 }
 
 pullResults() {

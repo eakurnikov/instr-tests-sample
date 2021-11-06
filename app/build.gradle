@@ -15,7 +15,11 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        testApplicationId "com.eakurnikov.instr_test_sample"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "com.eakurnikov.instrsample.runners.CustomAndroidJUnitRunner"
+        testBuildType = "debug"
     }
 
     signingConfigs {
@@ -51,6 +55,11 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    testOptions {
+        reportDir "$rootDir/test-reports"
+        resultsDir "$rootDir/test-results"
     }
 }
 

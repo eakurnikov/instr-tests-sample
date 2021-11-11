@@ -134,6 +134,7 @@ class FlakyTest : TestCase() {
         var messageInfo: SmsInfo? = null
 
         step("Receive SMS message") {
+            device.exploit.rotate()
             device.phone.receiveSms(
                 SMS_PHONE_NUMBER,
                 SMS_MESSAGE_TEXT

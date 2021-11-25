@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup"
-        tools:replace="android:name,android:allowBackup,android:icon,android:roundIcon,android:label" />
+        tools:replace="android:name,android:allowBackup,android:icon,android:roundIcon,android:label">
+
+        <activity
+            android:name=".view.ContainerActivity"
+            android:label="@string/container_screen" />
+
+    </application>
 
 </manifest>

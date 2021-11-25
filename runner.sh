@@ -2,10 +2,9 @@
 
 set -xe
 
-action=all # all|buildAndTest|test|clear
+action=all # all|norebuild
 buildCommand="assembleDebug assembleDebugAndroidTest"
-flags="-e debug false" #-e size small -e annotation com.kaspersky.kaspresso.annotations.E2e
-jUnitRunner=com.eakurnikov.instrsample.debug.test/io.qameta.allure.android.runners.AllureAndroidJUnitRunner #androidx.test.runner.AndroidJUnitRunner #com.eakurnikov.instrsample.runners.CustomAndroidJUnitRunner # com.eakurnikov.instrsample.debug.test|com.eakurnikov.instrsample.test/...
+jUnitRunner=com.eakurnikov.instrsample.debug.test/com.eakurnikov.instrsample.runner.CustomInstrRunner
 outputs=app/build/outputs
 results=./allure-results
 reports=./test-report
@@ -24,8 +23,18 @@ getTestPlan() {
 }
 
 writeTestPlan() {
-  rm -rf $testPlan
   getTestPlan > $testPlan
+}
+
+clear() {
+  adb shell rm -rf /sdcard/allure-results
+  adb shell rm -rf /sdcard/logcat
+  adb shell rm -rf /sdcard/report
+  adb shell rm -rf /sdcard/screenshots
+  adb shell rm -rf /sdcard/view_hierarchy
+  rm -rf $results
+  rm -rf $reports
+  rm -rf $testPlan
 }
 
 build() {
@@ -38,27 +47,27 @@ installApks() {
 }
 
 test() {
+  launchAdbServer & runTests
+  adbServerPid=$(ps -ef | awk '$NF~"adbserver" {print $2}')
+  kill $adbServerPid
+}
+
+launchAdbServer() {
+  java -jar ./artifacts/adbserver-desktop.jar
+}
+
+runTests() {
   for testClass in $(cat ./test-plan.txt); do
     adb shell am instrument -w -m -e class $testClass $jUnitRunner #$flags
     adb shell pm clear com.eakurnikov.instrsample.debug
   done
 }
 
-clearDeviceResults() {
-  adb shell rm -rf /sdcard/allure-results
-  adb shell rm -rf /sdcard/logcat
-  adb shell rm -rf /sdcard/report
-  adb shell rm -rf /sdcard/screenshots
-  adb shell rm -rf /sdcard/view_hierarchy
-}
-
 pullResults() {
-  rm -rf $results
   adb pull /sdcard/allure-results .
 }
 
 report() {
-  rm -rf $reports
   allure generate -o $reports $results
   allure open $reports
 }
@@ -71,10 +80,6 @@ for arg in "$@"; do
       ;;
     -buildCommand=*)
       buildCommand=${arg#*=}
-      shift
-      ;;
-    -flags=*)
-      flags=${arg#*=}
       shift
       ;;
     -jUnitRunner=*)
@@ -117,24 +122,20 @@ done
 
 case $action in
   all)
+    clear
     writeTestPlan
-    clearDeviceResults
     build
     installApks
     test
     pullResults
     report
     ;;
-  buildAndTest)
-    build
-    installApks
+  norebuild)
+    clear
+    writeTestPlan
     test
-    ;;
-  test)
-    test
-    ;;
-  clear)
-    clearDeviceResults
+    pullResults
+    report
     ;;
   *)
     echo "Unknown action"

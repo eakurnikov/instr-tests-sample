@@ -47,13 +47,9 @@
             android:name=".view.FlakyActivity"
             android:label="@string/flaky_screen" />
 
-        <!--        <activity-->
-        <!--            android:name=".view.posts.PostsActivity"-->
-        <!--            android:label="@string/posts_screen" />-->
-
-        <!--        <activity-->
-        <!--            android:name=".view.webview.WebViewActivity"-->
-        <!--            android:label="@string/webview_screen" />-->
+        <activity
+            android:name=".view.PostsActivity"
+            android:label="@string/posts_screen" />
 
     </application>
 

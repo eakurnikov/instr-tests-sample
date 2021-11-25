@@ -2,17 +2,27 @@
 
 set -xe
 
-action=all # all|buildAndTest|test|clear
+action=all # all|norebuild
 buildCommand="assembleDebug assembleDebugAndroidTest"
-flags="-e debug false -e size small -e annotation com.kaspersky.kaspresso.annotations.E2e"
-tests="package com.eakurnikov.instrsample.tests" # |"class com.eakurnikov.instrsample.tests.GoodKaspressoTest"
+flags="-e debug false" #-e size small -e annotation com.kaspersky.kaspresso.annotations.E2e
+tests="package com.eakurnikov.instrsample.tests" # |"class com.eakurnikov.instrsample.tests.posts.PostsTest"
 orchestration=none #orchestrator|none
 orchestratorApk=./artifacts/orchestrator-1.4.0.apk
 testServicesApk=./artifacts/test-services-1.4.0.apk
-jUnitRunner=com.eakurnikov.instrsample.debug.test/io.qameta.allure.android.runners.AllureAndroidJUnitRunner #androidx.test.runner.AndroidJUnitRunner #com.eakurnikov.instrsample.runners.CustomAndroidJUnitRunner # com.eakurnikov.instrsample.debug.test|com.eakurnikov.instrsample.test/...
+jUnitRunner=com.eakurnikov.instrsample.debug.test/com.eakurnikov.instrsample.runner.CustomInstrRunner
 outputs=app/build/outputs
 results=./allure-results
 reports=./test-report
+
+clear() {
+    adb shell rm -rf /sdcard/allure-results
+    adb shell rm -rf /sdcard/logcat
+    adb shell rm -rf /sdcard/report
+    adb shell rm -rf /sdcard/screenshots
+    adb shell rm -rf /sdcard/view_hierarchy
+    rm -rf $results
+    rm -rf $reports
+}
 
 build() {
   ./gradlew $buildCommand
@@ -28,6 +38,16 @@ installApks() {
 }
 
 test() {
+  launchAdbServer & runTests
+  adbServerPid=$(ps -ef | awk '$NF~"adbserver" {print $2}')
+  kill $adbServerPid
+}
+
+launchAdbServer() {
+  java -jar ./artifacts/adbserver-desktop.jar
+}
+
+runTests() {
   case $orchestration in
     none)
       adb shell am instrument -w -m "$flags" -e "$tests" $jUnitRunner
@@ -49,21 +69,11 @@ test() {
   esac
 }
 
-clear() {
-    adb shell rm -rf /sdcard/allure-results
-    adb shell rm -rf /sdcard/logcat
-    adb shell rm -rf /sdcard/report
-    adb shell rm -rf /sdcard/screenshots
-    adb shell rm -rf /sdcard/view_hierarchy
-}
-
 pullResults() {
-  rm -rf $results
   adb pull /sdcard/allure-results .
 }
 
 report() {
-  rm -rf $reports
   allure generate -o $reports $results
   allure open $reports
 }
@@ -121,16 +131,11 @@ case $action in
     pullResults
     report
     ;;
-  buildAndTest)
-    build
-    installApks
-    test
-    ;;
-  test)
-    test
-    ;;
-  clear)
+  norebuild)
     clear
+    test
+    pullResults
+    report
     ;;
   *)
     echo "Unknown action"

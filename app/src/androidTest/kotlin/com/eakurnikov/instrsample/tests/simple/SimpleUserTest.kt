@@ -1,61 +1,64 @@
 package com.eakurnikov.instrsample.tests.simple
 
-import android.Manifest
 import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.GrantPermissionRule
 import com.eakurnikov.instrsample.view.MainActivity
 import com.eakurnikov.instrsample.R
+import com.eakurnikov.instrsample.common.TestStream
+import com.eakurnikov.instrsample.data.NetworkConstants
+import com.eakurnikov.instrsample.data.dto.UserDto
+import com.eakurnikov.instrsample.env.TestEnv
 import com.eakurnikov.instrsample.matchers.ClassNameMatcher
 import com.eakurnikov.instrsample.matchers.ViewSizeMatcher.Companion.withWidthAndHeight
 import com.eakurnikov.instrsample.scenarios.TypeTextAndCheckTitleScenario
 import com.eakurnikov.instrsample.screens.MainScreen
-import com.kaspersky.components.alluresupport.withAllureSupport
+import com.eakurnikov.instrsample.tests.base.CustomTestCase
 import com.kaspersky.kaspresso.annotations.E2e
 import com.kaspersky.kaspresso.annotations.Functional
-import com.kaspersky.kaspresso.kaspresso.Kaspresso
-import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+import io.qameta.allure.kotlin.Epic
+import io.qameta.allure.kotlin.Link
+import io.qameta.allure.kotlin.junit4.DisplayName
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class PerfectKaspressoTest : TestCase(
-    kaspressoBuilder = Kaspresso.Builder.withAllureSupport()
-) {
-    @get:Rule
-    val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
+@Link(
+    value = "TestCase #111",
+    name = "TestCase #111",
+    url = NetworkConstants.TMS_URL,
+    type = "tms"
+)
+@Epic(TestStream.SIMPLE)
+@DisplayName("SimpleUserTest: Загрузка юзера и ввод его имени и почты в поле")
+class SimpleUserTest : CustomTestCase() {
 
     @get:Rule
-    val activityRule = activityScenarioRule<MainActivity>()
+    override val activityRule = activityScenarioRule<MainActivity>()
+
+    override fun realEnv() = TestEnv.Real()
+
+    override fun mockedEnv() = TestEnv.Mocked()
 
     @E2e
     @SmallTest
     @Test
-    fun e2eTest() = perfectKaspressoTest()
+    fun simpleUserE2eTest() = test(realEnv())
 
     @Functional
     @SmallTest
     @Test
-    fun mockedTest() = perfectKaspressoTest()
+    fun simpleUserMockedTest() = test(mockedEnv())
 
-    private fun perfectKaspressoTest() {
+    override fun test(env: TestEnv) {
+        var user: UserDto? = null
         before {
-            /**
-             * Some action to prepare the state
-             */
+            env.prepare()
+            user = LoadUser()
+            assert(user != null)
         }.after {
-            /**
-             * Some action to revert the state
-             */
+            env.clean()
         }.run {
             step("Open Simple screen") {
-                testLogger.i("Instrumentation=${InstrumentationRegistry.getInstrumentation()}")
                 MainScreen {
                     title.hasText(R.string.main_title)
                     title.hasTextColor(R.color.colorPrimary)
@@ -73,10 +76,7 @@ class PerfectKaspressoTest : TestCase(
                 }
             }
 
-            scenario(TypeTextAndCheckTitleScenario("1"))
-            scenario(TypeTextAndCheckTitleScenario(" "))
-            scenario(TypeTextAndCheckTitleScenario("Kaspresso"))
-            scenario(TypeTextAndCheckTitleScenario(""))
+            scenario(TypeTextAndCheckTitleScenario("${user!!.name}: ${user!!.email}"))
         }
     }
 }

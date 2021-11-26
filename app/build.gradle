@@ -21,7 +21,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('instr-tests-keystore.jks')
+            storeFile file('instr-tests-keystore.jks') // please add your own keystore file locally
             keyAlias 'instr-test-keystore'
             keyPassword 'instrtests1'
             storePassword 'instrtests1'

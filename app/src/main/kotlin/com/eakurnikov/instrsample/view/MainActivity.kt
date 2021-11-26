@@ -15,5 +15,13 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_simple_screen).setOnClickListener {
             SimpleActivity.start(this)
         }
+
+        findViewById<Button>(R.id.btn_flaky_screen).setOnClickListener {
+            FlakyActivity.start(this)
+        }
+
+        findViewById<Button>(R.id.btn_posts_screen).setOnClickListener {
+            PostsActivity.start(this)
+        }
     }
 }

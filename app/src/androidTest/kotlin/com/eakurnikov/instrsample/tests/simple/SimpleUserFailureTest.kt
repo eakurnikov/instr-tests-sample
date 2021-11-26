@@ -1,42 +1,60 @@
 package com.eakurnikov.instrsample.tests.simple
 
-import android.Manifest
 import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.GrantPermissionRule
+import androidx.test.filters.SmallTest
 import com.eakurnikov.instrsample.view.MainActivity
 import com.eakurnikov.instrsample.R
+import com.eakurnikov.instrsample.common.TestStream
+import com.eakurnikov.instrsample.data.NetworkConstants
+import com.eakurnikov.instrsample.data.app.PostsApiMockFailure
+import com.eakurnikov.instrsample.di.app.mock.MocksConfig
+import com.eakurnikov.instrsample.di.component.NetworkComponentImpl
+import com.eakurnikov.instrsample.env.TestEnv
 import com.eakurnikov.instrsample.matchers.ClassNameMatcher
 import com.eakurnikov.instrsample.matchers.ViewSizeMatcher.Companion.withWidthAndHeight
 import com.eakurnikov.instrsample.scenarios.TypeTextAndCheckTitleScenario
 import com.eakurnikov.instrsample.screens.MainScreen
-import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+import com.eakurnikov.instrsample.tests.base.CustomTestCase
+import com.kaspersky.kaspresso.annotations.Functional
+import io.qameta.allure.kotlin.Epic
+import io.qameta.allure.kotlin.Link
+import io.qameta.allure.kotlin.junit4.DisplayName
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class PerfectKaspressoTest : TestCase() {
+@Link(
+    value = "TestCase #111",
+    name = "TestCase #111",
+    url = NetworkConstants.TMS_URL,
+    type = "tms"
+)
+@Epic(TestStream.SIMPLE)
+@DisplayName("SimpleUserFailureTest: Неудачная загрузка юзера и ввод различных строк в поле")
+class SimpleUserFailureTest : CustomTestCase() {
 
     @get:Rule
-    val runtimePermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    override val activityRule = activityScenarioRule<MainActivity>()
+
+    override fun mockedEnv() = TestEnv.Mocked(
+        mocksConfig = MocksConfig(
+            networkComponentMock = NetworkComponentImpl(
+                postsApi = PostsApiMockFailure()
+            )
+        )
     )
 
-    @get:Rule
-    val activityRule = activityScenarioRule<MainActivity>()
-
+    @Functional
+    @SmallTest
     @Test
-    fun perfectKaspressoTest() {
+    fun simpleUserFailureMockedTest() = test(mockedEnv())
+
+    override fun test(env: TestEnv) {
         before {
-            /**
-             * Some action to prepare the state
-             */
+            env.prepare()
+            assert(LoadUser() == null)
         }.after {
-            /**
-             * Some action to revert the state
-             */
+            env.clean()
         }.run {
             step("Open Simple screen") {
                 MainScreen {

@@ -13,7 +13,7 @@ class TypeTextAndCheckTitleScenario(
     override val steps: TestContext<Unit>.() -> Unit = {
         testLogger.i("The given text is \"$text\"")
 
-        step("Type \"$text\" and open Second screen") {
+        step("Type \"$text\" and open Very Simple Screen") {
             SimpleScreen {
                 title {
                     hasText(R.string.simple_title)

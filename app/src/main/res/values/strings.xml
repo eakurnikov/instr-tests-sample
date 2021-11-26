@@ -6,9 +6,7 @@
     <string name="simple_screen">Simple screen</string>
     <string name="second_screen">Second screen</string>
     <string name="flaky_screen">Flaky screen</string>
-    <string name="webview_screen">WebView screen</string>
     <string name="posts_screen">Posts screen</string>
-    <string name="doc_loc_screen">DocLoc screen</string>
 
     <!-- Simple activity -->
     <string name="simple_title">Simple title</string>
@@ -28,4 +26,10 @@
     <string name="logical_error">Something went wrong :(</string>
     <string name="error">Something went completely wrong :(</string>
     <string name="no_entries">No entries yet :( Swipe to refresh</string>
+
+    <!-- Custom view -->
+    <string name="custom_title">Custom view</string>
+    <string name="custom_btn_title_before">Click me</string>
+    <string name="custom_btn_title_after">Thanks!</string>
+
 </resources>
